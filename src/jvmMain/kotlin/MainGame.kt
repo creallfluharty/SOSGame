@@ -4,17 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 
@@ -34,6 +34,7 @@ data class Node(
 data class BoardState(val matrix: List<List<Node>>) {
     fun placeTile(tile: TileType, r: Int, c: Int): BoardState {
         return BoardState(matrix.mapIndexed { rowIx, row ->
+            // TODO: Don't map rows that don't change
             row.mapIndexed { colIx, node ->
                 if (rowIx == r && colIx == c) node.copy(tileType = tile) else node
             }
@@ -44,14 +45,14 @@ data class BoardState(val matrix: List<List<Node>>) {
 
 @Composable
 @Preview
-fun LetterTile(letter: String) {
-    val shape = RoundedCornerShape(25)
+fun LetterTile(letter: String, size: Dp, borderWidth: Dp = 1.dp, borderRadiusPercent: Int = 25) {
+    val shape = RoundedCornerShape(borderRadiusPercent)
 
     Column(
         Modifier
-            .width(20.dp)
-            .height(20.dp)
-            .border(BorderStroke(1.dp, Color.Black), shape = shape)
+            .width(size)
+            .height(size)
+            .border(BorderStroke(borderWidth, Color.Black), shape = shape)
             .background(MaterialTheme.colors.secondary, shape = shape),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -62,17 +63,23 @@ fun LetterTile(letter: String) {
 
 @Composable
 @Preview
+fun LetterPickerTile(letters: Pair<String, String>, size: Dp, borderWidth: Dp = 1.dp, borderRadiusPercent: Int = 25) {
+    //
+}
+
+@Composable
+@Preview
 fun SOSBoard(width: Int, height: Int) {
     var boardState by remember { mutableStateOf(BoardState(List(height) { List(width) { Node() } })) }
 
     Column(
         Modifier
             .width(IntrinsicSize.Min)
-            .drawWithContent {
-                drawContent()
-                drawLine(Color.Red, Offset(15f, 15f), Offset(32*3+15f, 32*3+15f), 1f)
-                drawLine(Color.Red, Offset(32*3+15f, 15f), Offset(15f, 32*3+15f), 1f)
-            }
+//            .drawWithContent {
+//                drawContent()
+//                drawLine(Color.Red, Offset(15f, 15f), Offset(32*3+15f, 32*3+15f), 1f)
+//                drawLine(Color.Red, Offset(32*3+15f, 15f), Offset(15f, 32*3+15f), 1f)
+//            }
     ) {
         IntRange(1, height).map { rowNum ->
             Row(Modifier.height(IntrinsicSize.Min)) {
@@ -89,7 +96,7 @@ fun SOSBoard(width: Int, height: Int) {
                             .height(20.dp)
                     ) {
                         if (tile != null)
-                            LetterTile(if (tile == TileType.S) "S" else "O")
+                            LetterTile(if (tile == TileType.S) "S" else "O", 25.dp)
                     }
                     if (colNum < width) Divider(Modifier.fillMaxHeight().width(1.dp).background(Color.Black))
                 }
