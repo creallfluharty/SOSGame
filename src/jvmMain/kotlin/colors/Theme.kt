@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 val redish = Color(0xffee646d)
 
-val DarkColors = darkColors(
+val Colors = darkColors(
     primary = Color.White,
     primaryVariant = Color.White,
     secondary = redish,

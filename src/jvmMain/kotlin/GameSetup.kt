@@ -1,13 +1,11 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
@@ -15,17 +13,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 
-enum class GameMode {
+enum class PlayMode {
     Singleplayer,
     PassAndPlay,
+}
+
+enum class GameMode {
+    Simple,
+    General,
 }
 
 
 @Composable
 @Preview
-fun GameSetup(onGameStart: (GameMode, Int, Boolean) -> Unit) {
-    val gameModes = hashMapOf("Singleplayer (vs AI)" to GameMode.Singleplayer, "Pass-and-Play" to GameMode.PassAndPlay)
-    var selectedMode by remember { mutableStateOf("Pass-and-Play") }
+fun GameSetup(onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
+    val playModes = hashMapOf("Singleplayer (vs AI)" to PlayMode.Singleplayer, "Pass-and-Play" to PlayMode.PassAndPlay)
+    val gameModes = hashMapOf("Simple" to GameMode.Simple, "General" to GameMode.General)
+    var selectedPlayMode by remember { mutableStateOf("Pass-and-Play") }
+    var selectedGameMode by remember { mutableStateOf("General") }
     var boardSizeInput by remember { mutableStateOf("8") }
     var recordGame by remember { mutableStateOf(false) }
 
@@ -60,7 +65,18 @@ fun GameSetup(onGameStart: (GameMode, Int, Boolean) -> Unit) {
                     )
                     .padding(10.dp)
             ) {
-                RadioSelection(gameModes.keys.toList(), selected = selectedMode, onOptionSelect = { selectedMode = it })
+                RadioSelection(playModes.keys.toList(), selected = selectedPlayMode, onOptionSelect = { selectedPlayMode = it })
+
+                Divider(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(MaterialTheme.colors.primary)
+                )
+
+                RadioSelection(gameModes.keys.toList(), selected = selectedGameMode, onOptionSelect = { selectedGameMode = it })
+
+                // TODO: stop copying this
                 Divider(
                     Modifier
                         .fillMaxWidth()
@@ -94,7 +110,7 @@ fun GameSetup(onGameStart: (GameMode, Int, Boolean) -> Unit) {
             }
             Button(
                 onClick = {
-                    onGameStart(gameModes[selectedMode]!!, boardSizeInput.toInt(), recordGame)
+                    onGameStart(playModes[selectedPlayMode]!!, gameModes[selectedGameMode]!!, boardSizeInput.toInt(), recordGame)
                 },
                 enabled = boardSizeIsValid,
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)

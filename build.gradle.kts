@@ -10,6 +10,14 @@ plugins {
 group = "io.github.creallfluharty"
 version = "1.0-SNAPSHOT"
 
+dependencies {
+    commonTestImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 repositories {
     google()
     mavenCentral()
@@ -29,7 +37,6 @@ kotlin {
                 implementation(compose.desktop.currentOs)
             }
         }
-        val jvmTest by getting
     }
 }
 
