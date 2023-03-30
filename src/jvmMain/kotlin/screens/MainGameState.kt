@@ -5,9 +5,9 @@ import components.Token
 import components.TokenSelectorState
 
 data class MainGameState private constructor(
-    private val playMode: PlayMode,
-    private val gameMode: GameMode,
-    private val recordGame: Boolean,
+    val playMode: PlayMode,
+    val gameMode: GameMode,
+    val recordGame: Boolean,
     val boardState: RectangularBoardState<Token>,
     val tokenSelectorState: TokenSelectorState,
 ) : ScreenState {
@@ -28,10 +28,6 @@ data class MainGameState private constructor(
         RectangularBoardState<Token>(boardSize, boardSize),
         TokenSelectorState(ALLOWED_TOKENS, 0)
     )
-
-    fun getPlayMode() = playMode
-    fun getGameMode() = gameMode
-    fun getRecordGame() = recordGame
 
     fun setTokenSelectionIndex(index: Int) = copy(tokenSelectorState = tokenSelectorState.setSelectedIndex(index))
     fun getSelectedToken() = tokenSelectorState.getSelection()

@@ -18,9 +18,9 @@ fun MainGame(state: MainGameState, setState: (MainGameState) -> Unit) {
     Column {
         Row {
             // TODO: share these strings
-            Text(if (state.getPlayMode() == PlayMode.PassAndPlay) "Pass-and-Play" else "Singleplayer (vs AI)")
+            Text(if (state.playMode == PlayMode.PassAndPlay) "Pass-and-Play" else "Singleplayer (vs AI)")
             Spacer(Modifier.width(10.dp))
-            Text(if (state.getGameMode() == GameMode.General) "General" else "Simple")
+            Text(if (state.gameMode == GameMode.General) "General" else "Simple")
         }
 
         Row {
