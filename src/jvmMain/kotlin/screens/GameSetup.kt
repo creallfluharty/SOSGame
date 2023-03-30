@@ -30,6 +30,15 @@ enum class GameMode {
 @Composable
 @Preview
 fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
+    @Composable
+    fun divider() {
+        Divider(Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MaterialTheme.colors.primary)
+        )
+    }
+
     ProvideTextStyle(TextStyle(color = Color.White)) {
         Column(Modifier
                 .width(800.dp)
@@ -53,31 +62,16 @@ fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameS
                     .padding(10.dp)
             ) {
                 RadioSelection(state.playModeSelection, onOptionSelect = { setState(state.selectPlayMode(it)) })
-
-                Divider(Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colors.primary)
-                )
+                divider()
 
                 RadioSelection(state.gameModeSelection, onOptionSelect = { setState(state.selectGameMode(it)) })
+                divider()
 
-                // TODO: stop copying this
-                Divider(Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colors.primary)
-                )
-                // TODO: Extract this into a new component
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = state.recordGame, onCheckedChange = { setState(state.setRecordGame(it)) })
-                    Text("Record Game?")
+                CheckboxOption("Record Game?", state.recordGame) {
+                    setState(state.setRecordGame(it))
                 }
-                Divider(Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colors.primary)
-                )
+                divider()
+
                 NumberInputField(
                     "Board Size",
                     state.boardSizeInput,

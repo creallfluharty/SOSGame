@@ -16,8 +16,6 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 
-// TODO: Drag and drop? for now we'll just highlight
-
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun TokenSelector(

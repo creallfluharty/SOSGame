@@ -34,5 +34,7 @@ data class MainGameState private constructor(
     fun getRecordGame() = recordGame
 
     fun setTokenSelectionIndex(index: Int) = copy(tokenSelectorState = tokenSelectorState.setSelectedIndex(index))
+    fun getSelectedToken() = tokenSelectorState.getSelection()
+
     fun placeTile(tile: Token, r: Int, c: Int, player: Int) = copy(boardState = boardState.placeTile(tile, r, c, player))
 }

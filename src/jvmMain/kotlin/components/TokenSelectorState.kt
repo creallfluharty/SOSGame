@@ -1,6 +1,6 @@
 package components
 
-// TODO maybe combine this with RadioSelectionState?
+// TODO: maybe combine this with RadioSelectionState?
 class TokenSelectorState(
     private val tokens: List<Token>,
     private val selectedIndex: Int,

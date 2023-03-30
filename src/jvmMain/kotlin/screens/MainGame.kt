@@ -28,7 +28,7 @@ fun MainGame(state: MainGameState, setState: (MainGameState) -> Unit) {
                 setState(state.setTokenSelectionIndex(it))
             }
             RectangularBoard(cellRadius, state.boardState) { r, c ->
-                setState(state.placeTile(state.tokenSelectorState.getSelection(), r, c, 1))
+                setState(state.placeTile(state.getSelectedToken(), r, c, 1))
             }
         }
     }
