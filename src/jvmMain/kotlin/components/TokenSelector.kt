@@ -15,8 +15,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import helpers.TextDrawer
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun TokenSelector(
     cellRadius: Int,
@@ -32,7 +32,8 @@ fun TokenSelector(
         // TODO: Ignore clicks between the tokens
         onTokenIndexSelection(ix)
     }
-    val textMeasurer = rememberTextMeasurer()
+
+    val textDrawer = TextDrawer.makeWithDefaultTextMeasurer()
 
     Canvas(Modifier
         .height((optionDiameter * state.getNumTokens()).dp)
@@ -43,7 +44,7 @@ fun TokenSelector(
         for ((r, token, isSelected) in state.getOptionIter()) {
             val x = optionRadius.toFloat()
             val y = (r * optionDiameter).toFloat() + optionRadius
-            token.draw(this, textMeasurer, cellRadius, Offset(x, y))
+            token.draw(this, textDrawer, cellRadius, Offset(x, y))
             if (isSelected)
                 drawCircle(
                     Color.Black,

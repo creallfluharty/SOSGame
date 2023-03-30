@@ -13,9 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.dp
+import helpers.TextDrawer
 
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun RectangularBoard(
     cellRadius: Int,
@@ -31,7 +31,7 @@ fun RectangularBoard(
         val c = (pos.x / cellDiameter).toInt()
         onTilePressed(r, c)
     }
-    val textMeasurer = rememberTextMeasurer()
+    val textDrawer = TextDrawer.makeWithDefaultTextMeasurer()
 
     // TODO: maybe account for width of lines?
     // TODO: padding?
@@ -56,7 +56,7 @@ fun RectangularBoard(
                 if (tile != null) {
                     val x = (c * cellDiameter).toFloat() + cellRadius
                     val y = (r * cellDiameter).toFloat() + cellRadius
-                    tile.draw(this, textMeasurer, cellRadius, Offset(x, y))
+                    tile.draw(this, textDrawer, cellRadius, Offset(x, y))
                 }
             }
         }
