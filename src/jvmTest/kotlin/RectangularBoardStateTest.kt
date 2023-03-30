@@ -1,3 +1,7 @@
+import components.AlreadyOccupiedException
+import components.InvalidBoardSizeException
+import components.RectangularBoardState
+import components.Token
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

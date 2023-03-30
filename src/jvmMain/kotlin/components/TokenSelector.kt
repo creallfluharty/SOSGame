@@ -1,3 +1,5 @@
+package components
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.height
@@ -13,42 +15,38 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import kotlin.math.abs
-import kotlin.random.Random
 
 // TODO: Drag and drop? for now we'll just highlight
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun TokenSelector(
-    tokens: List<Token>,
     cellRadius: Int,
     highlightRadius: Int,
-    selectedIndex: Int,
-    setSelectedIndex: (Int) -> Unit
+    state: TokenSelectorState,
+    onTokenIndexSelection: (Int) -> Unit,
 ) {
     val optionRadius = cellRadius + highlightRadius
     val optionDiameter = 2 * optionRadius
 
-    fun onClickHandler(pos: Offset) {
+    val onClickHandler by rememberUpdatedState { pos: Offset ->
         val ix = (pos.y / optionDiameter).toInt()
-        // TODO: Fix this
-//        if (abs(pos.y - (ix * optionDiameter - optionRadius)) <= cellRadius)
-        setSelectedIndex(ix)
+        // TODO: Ignore clicks between the tokens
+        onTokenIndexSelection(ix)
     }
     val textMeasurer = rememberTextMeasurer()
 
     Canvas(Modifier
-        .height((optionDiameter * tokens.size).dp)
+        .height((optionDiameter * state.getNumTokens()).dp)
         .width(optionDiameter.dp)
         .pointerInput(Unit) { detectTapGestures(onTap = { onClickHandler(it) }) }
     ) {
-        // TODO: add parameter to pick vertical/horizontal
-        for ((r, token) in tokens.withIndex()) {
+        // TODO: Maybe add parameter to pick vertical/horizontal?
+        for ((r, token, isSelected) in state.getOptionIter()) {
             val x = optionRadius.toFloat()
             val y = (r * optionDiameter).toFloat() + optionRadius
             token.draw(this, textMeasurer, cellRadius, Offset(x, y))
-            if (r == selectedIndex)
+            if (isSelected)
                 drawCircle(
                     Color.Black,
                     center = Offset(x, y),

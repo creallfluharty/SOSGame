@@ -1,3 +1,5 @@
+package components
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.height
@@ -8,25 +10,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.dp
 
-class Token (val letter: Char) {
-    @OptIn(ExperimentalTextApi::class)
-    fun draw(drawScope: DrawScope, textMeasurer: TextMeasurer, cellRadius: Int, center: Offset) {
-        val textSize = textMeasurer.measure(AnnotatedString(letter.toString())).size
-        drawScope.apply {
-            drawCircle(Color.Red, cellRadius.toFloat(), center)
-            drawText(
-                textMeasurer,
-                letter.toString(),
-                topLeft = Offset(center.x - textSize.width / 2, center.y - textSize.height / 2)
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -39,7 +26,7 @@ fun RectangularBoard(
     val realWidth = cellDiameter * boardState.width
     val realHeight = cellDiameter * boardState.height
 
-    fun onClickHandler(pos: Offset) {
+    val onClickHandler by rememberUpdatedState { pos: Offset ->
         val r = (pos.y / cellDiameter).toInt()
         val c = (pos.x / cellDiameter).toInt()
         onTilePressed(r, c)

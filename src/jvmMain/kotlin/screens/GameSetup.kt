@@ -1,3 +1,5 @@
+package screens
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -11,6 +13,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import components.*
 
 
 enum class PlayMode {
@@ -26,24 +29,9 @@ enum class GameMode {
 
 @Composable
 @Preview
-fun GameSetup(onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
-    val playModes = hashMapOf("Singleplayer (vs AI)" to PlayMode.Singleplayer, "Pass-and-Play" to PlayMode.PassAndPlay)
-    val gameModes = hashMapOf("Simple" to GameMode.Simple, "General" to GameMode.General)
-    var selectedPlayMode by remember { mutableStateOf("Pass-and-Play") }
-    var selectedGameMode by remember { mutableStateOf("General") }
-    var boardSizeInput by remember { mutableStateOf("8") }
-    var recordGame by remember { mutableStateOf(false) }
-
-    val boardSizeIsValid = try {
-        val boardSize = boardSizeInput.toInt()
-        boardSize in 3 until 20
-    } catch (e: NumberFormatException) {
-        false
-    }
-
+fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
     ProvideTextStyle(TextStyle(color = Color.White)) {
-        Column(
-            Modifier
+        Column(Modifier
                 .width(800.dp)
                 .height(500.dp)
                 .background(Color.Blue),
@@ -56,8 +44,7 @@ fun GameSetup(onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
                 modifier = Modifier.height(100.dp)
             )
             Spacer(Modifier.height(10.dp))
-            Column(
-                Modifier
+            Column(Modifier
                     .width(300.dp)
                     .border(
                         BorderStroke(1.dp, SolidColor(MaterialTheme.colors.primary)),
@@ -65,54 +52,42 @@ fun GameSetup(onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
                     )
                     .padding(10.dp)
             ) {
-                RadioSelection(playModes.keys.toList(), selected = selectedPlayMode, onOptionSelect = { selectedPlayMode = it })
+                RadioSelection(state.playModeSelection, onOptionSelect = { setState(state.selectPlayMode(it)) })
 
-                Divider(
-                    Modifier
+                Divider(Modifier
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(MaterialTheme.colors.primary)
                 )
 
-                RadioSelection(gameModes.keys.toList(), selected = selectedGameMode, onOptionSelect = { selectedGameMode = it })
+                RadioSelection(state.gameModeSelection, onOptionSelect = { setState(state.selectGameMode(it)) })
 
                 // TODO: stop copying this
-                Divider(
-                    Modifier
+                Divider(Modifier
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(MaterialTheme.colors.primary)
                 )
+                // TODO: Extract this into a new component
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = recordGame, onCheckedChange = { checked -> recordGame = checked })
+                    Checkbox(checked = state.recordGame, onCheckedChange = { setState(state.setRecordGame(it)) })
                     Text("Record Game?")
                 }
-                Divider(
-                    Modifier
+                Divider(Modifier
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(MaterialTheme.colors.primary)
                 )
-                RestrictedInputField(
-                    { value, onValueChange ->
-                        TextField(
-                            value,
-                            label = { Text("Board Size") },
-                            onValueChange = onValueChange,
-                            maxLines = 1,
-                            isError = !boardSizeIsValid
-                        )
-                    },
-                    value = boardSizeInput,
-                    isAllowed = makeCharsetValidator("0123456789"),
-                    onValueChange = { boardSizeInput = it },
-                )
+                NumberInputField(
+                    "Board Size",
+                    state.boardSizeInput,
+                ) { setState(state.replaceBoardSizeInput(it)) }
             }
             Button(
                 onClick = {
-                    onGameStart(playModes[selectedPlayMode]!!, gameModes[selectedGameMode]!!, boardSizeInput.toInt(), recordGame)
+                    onGameStart(state.getSelectedPlayMode(), state.getSelectedGameMode(), state.getBoardSize(), state.recordGame)
                 },
-                enabled = boardSizeIsValid,
+                enabled = state.checkBoardSizeIsValid(),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
             ) { Text("New Game") }
         }
