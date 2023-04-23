@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import components.*
+import components.RectangularBoard
+import components.TokenSelector
 
 
 @Composable
-fun MainGame(state: MainGameState, setState: (MainGameState) -> Unit) {
+fun GameView(state: GeneralGameState, setState: (GeneralGameState) -> Unit) {
     val cellRadius = 15 // TODO: probably parameterize this
 
     Column {
@@ -27,8 +28,8 @@ fun MainGame(state: MainGameState, setState: (MainGameState) -> Unit) {
             TokenSelector(cellRadius, 1, state.tokenSelectorState) {
                 setState(state.setTokenSelectionIndex(it))
             }
-            RectangularBoard(cellRadius, state.boardState) { r, c ->
-                setState(state.placeTile(state.getSelectedToken(), r, c, 1))
+            RectangularBoard(cellRadius, state.boardState, state.players) { r, c ->
+                setState(state.placeToken(state.getSelectedToken(), r, c, state.turn))
             }
         }
     }

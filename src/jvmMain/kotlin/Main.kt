@@ -17,9 +17,9 @@ fun App() {
     MaterialTheme(colors = Colors) {
         when (screenState) {
             is GameSetupState -> GameSetup(screenState, setScreenState) { playMode, gameMode, boardSize, recordGame ->
-                setScreenState(MainGameState(playMode, gameMode, boardSize, recordGame))
+                setScreenState(GeneralGameState(playMode, gameMode, boardSize, recordGame))
             }
-            is MainGameState -> MainGame(screenState, setScreenState)
+            is GeneralGameState -> GameView(screenState, setScreenState)
         }
     }
 }
