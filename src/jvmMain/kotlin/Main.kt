@@ -1,11 +1,17 @@
+
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import colors.Colors
+import models.GeneralGameState
+import models.ScreenState
+import models.SimpleGameState
 import screens.*
 
 
@@ -17,9 +23,14 @@ fun App() {
     MaterialTheme(colors = Colors) {
         when (screenState) {
             is GameSetupState -> GameSetup(screenState, setScreenState) { playMode, gameMode, boardSize, recordGame ->
-                setScreenState(GeneralGameState(playMode, gameMode, boardSize, recordGame))
+                setScreenState(when (gameMode) {
+                    GameMode.General -> GeneralGameState(boardSize)
+                    GameMode.Simple -> SimpleGameState(boardSize)
+                })
             }
+//            is GameState<*> -> GameView(screenState, setScreenState)
             is GeneralGameState -> GameView(screenState, setScreenState)
+            is SimpleGameState -> GameView(screenState, setScreenState)
         }
     }
 }

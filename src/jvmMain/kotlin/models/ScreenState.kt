@@ -1,4 +1,4 @@
-package screens
+package models
 
 // TODO: Is this necessary?
 interface ScreenState

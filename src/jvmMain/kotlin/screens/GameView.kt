@@ -2,34 +2,35 @@ package screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import components.PlayerInfoView
 import components.RectangularBoard
 import components.TokenSelector
+import models.GameState
+import models.GeneralGameState
 
 
 @Composable
-fun GameView(state: GeneralGameState, setState: (GeneralGameState) -> Unit) {
+fun <G: GameState<G>> GameView(state: G, setState: (G) -> Unit) {
     val cellRadius = 15 // TODO: probably parameterize this
 
     Column {
         Row {
             // TODO: share these strings
-            Text(if (state.playMode == PlayMode.PassAndPlay) "Pass-and-Play" else "Singleplayer (vs AI)")
-            Spacer(Modifier.width(10.dp))
-            Text(if (state.gameMode == GameMode.General) "General" else "Simple")
+            Text(if (state is GeneralGameState) "General" else "Simple")
         }
 
+        PlayerInfoView(state.getStatus(), state.getPlayers(), (2 * cellRadius).dp)
+
         Row {
-            TokenSelector(cellRadius, 1, state.tokenSelectorState) {
+            TokenSelector(cellRadius, 1, state.getTokenSelectorState()) {
                 setState(state.setTokenSelectionIndex(it))
             }
-            RectangularBoard(cellRadius, state.boardState, state.players) { r, c ->
-                setState(state.placeToken(state.getSelectedToken(), r, c, state.turn))
+            RectangularBoard(cellRadius, state.getBoardState(), state.getPlayers()) { r, c ->
+                if (!state.checkGameEnded())
+                    setState(state.placeToken(state.getSelectedToken(), r, c, state.getTurn()))
             }
         }
     }

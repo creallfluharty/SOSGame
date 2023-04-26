@@ -15,12 +15,14 @@ class RectangularBoardState private constructor(
     val height: Int,
     private val matrix: List<List<Token?>>,
     private val SOSs: List<SOS<Int>>,
+    private val unfilledTiles: Int,
 ) {
     constructor(width: Int, height: Int) : this(
         width,
         height,
         List(height) { List<Token?>(width) { null } },
-        listOf()
+        listOf(),
+        width * height,
     ) {
         if (width !in 3..20 || height !in 3..20) {
             throw InvalidBoardSizeException("Board size $width $height is invalid!")
@@ -47,6 +49,7 @@ class RectangularBoardState private constructor(
                 else row.mapIndexed { colIx, oldToken -> if (colIx != c) oldToken else token }
             },
             SOSs + newSOSs,
+            unfilledTiles - 1,
         )
 
         return Pair(newSOSs.size, newBoard);
@@ -86,7 +89,7 @@ class RectangularBoardState private constructor(
                 }
             }
             else -> {
-                throw AssertionError("How'd you manage that?")
+                throw AssertionError("We're playing SOS - for now anyway")
             }
         }
 
@@ -94,4 +97,6 @@ class RectangularBoardState private constructor(
     }
 
     fun getSOSs() = SOSs
+
+    fun isFull() = unfilledTiles == 0
 }
