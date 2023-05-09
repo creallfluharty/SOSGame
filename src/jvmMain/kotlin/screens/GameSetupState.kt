@@ -2,20 +2,21 @@ package screens
 
 import components.NumberInputFieldState
 import components.RadioSelectionState
+import components.ToggleCarouselState
 import models.ScreenState
 
 data class GameSetupState(
     val gameModeSelection: RadioSelectionState<GameMode>,
-    val playModeSelection: RadioSelectionState<PlayMode>,
+    val player1TypeToggle: ToggleCarouselState<PlayerType>,
+    val player2TypeToggle: ToggleCarouselState<PlayerType>, // TODO: List<PlayerType>
     val boardSizeInput: NumberInputFieldState,
     val recordGame: Boolean,
 ) : ScreenState {
     companion object {
-        val PLAY_MODES = linkedMapOf(PlayMode.PassAndPlay to "Pass-and-Play", PlayMode.Singleplayer to "Singleplayer (vs AI)")
         val GAME_MODES = linkedMapOf(GameMode.Simple to "Simple", GameMode.General to "General")
+        val PLAYER_TYPES = listOf(Pair("humanPlayer.png", PlayerType.Human), Pair("computerPlayer.png", PlayerType.Computer))
 
         val DEFAULT_GAME_MODE = GameMode.Simple
-        val DEFAULT_PLAY_MODE = PlayMode.PassAndPlay
         const val DEFAULT_BOARD_SIZE = 8
         const val MIN_BOARD_SIZE = 3
         const val MAX_BOARD_SIZE = 20
@@ -24,16 +25,17 @@ data class GameSetupState(
 
     constructor() : this(
         RadioSelectionState(GAME_MODES, DEFAULT_GAME_MODE),
-        RadioSelectionState(PLAY_MODES, DEFAULT_PLAY_MODE),
+        ToggleCarouselState(PLAYER_TYPES),
+        ToggleCarouselState(PLAYER_TYPES),
         NumberInputFieldState(DEFAULT_BOARD_SIZE, MIN_BOARD_SIZE, MAX_BOARD_SIZE),
-        DEFAULT_RECORD_GAME
+        DEFAULT_RECORD_GAME,
     )
 
     fun selectGameMode(gameMode: GameMode) = copy(gameModeSelection = gameModeSelection.makeSelection(gameMode))
     fun getSelectedGameMode() = gameModeSelection.getSelected()
 
-    fun selectPlayMode(playMode: PlayMode) = copy(playModeSelection = playModeSelection.makeSelection(playMode))
-    fun getSelectedPlayMode() = playModeSelection.getSelected()
+    fun togglePlayer1Type() = copy(player1TypeToggle = player1TypeToggle.advance())
+    fun togglePlayer2Type() = copy(player2TypeToggle = player2TypeToggle.advance())
 
     fun replaceBoardSizeInput(input: String) = copy(boardSizeInput = boardSizeInput.replaceInput(input))
     fun checkBoardSizeIsValid() = boardSizeInput.isValid()

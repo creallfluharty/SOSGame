@@ -1,6 +1,6 @@
 package components
 
-// TODO: Just switch back to using a list + index
+// TODO: Just switch back to using a list (of Pair<String, T>) + index
 class RadioSelectionState<T>(
     private val options: LinkedHashMap<T, String>,
     private val selected: T

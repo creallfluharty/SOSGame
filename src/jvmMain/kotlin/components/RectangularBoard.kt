@@ -68,7 +68,7 @@ fun RectangularBoard(
             val y1 = (run.start.r * cellDiameter).toFloat() + cellRadius
             val x2 = (run.end.c * cellDiameter).toFloat() + cellRadius
             val y2 = (run.end.r * cellDiameter).toFloat() + cellRadius
-            drawLine(players[run.player].color, Offset(x1, y1), Offset(x2, y2))
+            drawLine(players[run.player].getColor(), Offset(x1, y1), Offset(x2, y2))
         }
     }
 }

@@ -1,11 +1,21 @@
 package models
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-typealias PlayerID = Int
+interface Player {
+    fun getID(): PlayerID
+    fun getColor(): Color
+    fun getScore(): Int
 
-data class Player private constructor(val id: Int, val color: Color, val score: PlayerID) {
-    constructor(id: Int, color: Color) : this(id, color, 0)
+    fun addToScore(points: Int): Player
 
-    fun addToScore(points: Int) = copy(score = score + points)
+    // TODO: It would probably be better to just have some onEvent function that accepts TurnStart, TokenSelected, and TilePressed
+    @Composable
+    fun playerInterface(
+        gameState: GameState,
+        cellRadius: Int,
+        setPlayerState: (Player) -> Unit,
+        makeAction: (PlayAction) -> Unit,
+    )
 }

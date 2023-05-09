@@ -15,19 +15,19 @@ import models.Player
 fun PlayerInfoView(gameStatus: GameStatus, players: List<Player>, height: Dp) {
     Row {
         for (player in players) {
-            Text("Player ${player.id}: ${player.score}")
+            Text("Player ${player.getID()}: ${player.getScore()}")
             Spacer(Modifier.height(height).width(height))
         }
 
         when (gameStatus) {
             is GameStatus.Ongoing -> {
-                Text("Player ${gameStatus.turn}'s turn.")
+                Text("Player ${gameStatus.turn.getID()}'s turn.")
             }
             is GameStatus.Won -> {
-                Text("Player ${gameStatus.winner} won!")
+                Text("Player ${gameStatus.winner.getID()} won!")
             }
             is GameStatus.Tie -> {
-                Text("Players ${gameStatus.players} tied!")
+                Text("Players ${gameStatus.players.map { it.getID() }} tied!")
             }
         }
     }

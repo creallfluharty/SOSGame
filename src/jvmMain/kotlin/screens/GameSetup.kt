@@ -1,11 +1,14 @@
 package screens
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,23 +16,26 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import components.*
+import components.CheckboxOption
+import components.NumberInputField
+import components.RadioSelection
+import components.ToggleCarousel
 
-
-enum class PlayMode {
-    Singleplayer,
-    PassAndPlay,
-}
 
 enum class GameMode {
     Simple,
     General,
 }
 
+enum class PlayerType {
+    Human,
+    Computer,
+}
+
 
 @Composable
 @Preview
-fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayMode, GameMode, Int, Boolean) -> Unit) {
+fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayerType, PlayerType, GameMode, Int, Boolean) -> Unit) {
     @Composable
     fun divider() {
         Divider(Modifier
@@ -61,7 +67,9 @@ fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameS
                     )
                     .padding(10.dp)
             ) {
-                RadioSelection(state.playModeSelection, onOptionSelect = { setState(state.selectPlayMode(it)) })
+                ToggleCarousel(state.player1TypeToggle, "player 1 type", 50.dp) { setState(state.togglePlayer1Type()) }
+                ToggleCarousel(state.player2TypeToggle, "player 2 type", 50.dp) { setState(state.togglePlayer2Type()) }
+
                 divider()
 
                 RadioSelection(state.gameModeSelection, onOptionSelect = { setState(state.selectGameMode(it)) })
@@ -79,7 +87,13 @@ fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameS
             }
             Button(
                 onClick = {
-                    onGameStart(state.getSelectedPlayMode(), state.getSelectedGameMode(), state.getBoardSize(), state.recordGame)
+                    onGameStart(
+                        state.player1TypeToggle.getSelectedOption(),
+                        state.player2TypeToggle.getSelectedOption(),
+                        state.getSelectedGameMode(),
+                        state.getBoardSize(),
+                        state.recordGame
+                    )
                 },
                 enabled = state.checkBoardSizeIsValid(),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
