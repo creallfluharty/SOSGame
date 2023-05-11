@@ -6,6 +6,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import components.AlreadyOccupiedException
 import components.PlayerInfoView
 import components.RectangularBoard
 import models.GameStatus
@@ -49,9 +50,11 @@ fun GameView(
                     cellRadius,
                     { setState(state.updateGameState(gameState.updatePlayer(player.getID(), it))) },
                 ) {
-                    when (it) {
-                        is PlayAction.PlaceTile -> setState(state.updateGameState(gameState.placeToken(it, player.getID())))
-                    }
+                    try {
+                        when (it) {
+                            is PlayAction.PlaceTile -> setState(state.updateGameState(gameState.placeToken(it, player.getID())))
+                        }
+                    } catch (_: AlreadyOccupiedException) {}
                 }
             }
         }
