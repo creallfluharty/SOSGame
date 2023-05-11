@@ -35,7 +35,10 @@ data class GameSetupState(
     fun getSelectedGameMode() = gameModeSelection.getSelected()
 
     fun togglePlayer1Type() = copy(player1TypeToggle = player1TypeToggle.advance())
+    fun getPlayer1Type() = player1TypeToggle.getSelectedOption()
+
     fun togglePlayer2Type() = copy(player2TypeToggle = player2TypeToggle.advance())
+    fun getPlayer2Type() = player2TypeToggle.getSelectedOption()
 
     fun replaceBoardSizeInput(input: String) = copy(boardSizeInput = boardSizeInput.replaceInput(input))
     fun checkBoardSizeIsValid() = boardSizeInput.isValid()

@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import components.CheckboxOption
 import components.NumberInputField
 import components.RadioSelection
 import components.ToggleCarousel
@@ -35,7 +34,7 @@ enum class PlayerType {
 
 @Composable
 @Preview
-fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayerType, PlayerType, GameMode, Int, Boolean) -> Unit) {
+fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameStart: (PlayerType, PlayerType, GameMode, Int) -> Unit) {
     @Composable
     fun divider() {
         Divider(Modifier
@@ -75,11 +74,6 @@ fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameS
                 RadioSelection(state.gameModeSelection, onOptionSelect = { setState(state.selectGameMode(it)) })
                 divider()
 
-                CheckboxOption("Record Game?", state.recordGame) {
-                    setState(state.setRecordGame(it))
-                }
-                divider()
-
                 NumberInputField(
                     "Board Size",
                     state.boardSizeInput,
@@ -88,11 +82,10 @@ fun GameSetup(state: GameSetupState, setState: (GameSetupState) -> Unit, onGameS
             Button(
                 onClick = {
                     onGameStart(
-                        state.player1TypeToggle.getSelectedOption(),
-                        state.player2TypeToggle.getSelectedOption(),
+                        state.getPlayer1Type(),
+                        state.getPlayer2Type(),
                         state.getSelectedGameMode(),
                         state.getBoardSize(),
-                        state.recordGame
                     )
                 },
                 enabled = state.checkBoardSizeIsValid(),

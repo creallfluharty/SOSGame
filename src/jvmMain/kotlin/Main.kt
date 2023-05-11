@@ -23,7 +23,7 @@ fun App() {
 
     MaterialTheme(colors = Colors) {
         when (screenState) {
-            is GameSetupState -> GameSetup(screenState, setScreenState) { player1Type, player2Type, gameMode, boardSize, recordGame -> // TODO: GameConfiguration
+            is GameSetupState -> GameSetup(screenState, setScreenState) { player1Type, player2Type, gameMode, boardSize -> // TODO: GameConfiguration
                 // TODO: List<PlayerType>
                 val player1 = when (player1Type) {
                     PlayerType.Human -> HumanPlayer(0, Color.Red)
